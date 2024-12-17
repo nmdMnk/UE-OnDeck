@@ -2,6 +2,7 @@
 
 #include "SteamBigPictureTextField.h"
 #include "OnDeckLogChannels.h"
+#include "Steam/OnDeckSettings.h"
 
 #if ONDECK_STEAM_API_AVAILABLE
 	#include "steam/isteamutils.h"
@@ -24,7 +25,7 @@ void FSteamBigPictureTextField::ShowVirtualKeyboard(bool bShow, int32 UserIndex,
 	
 		const auto HintTextChar = StringCast<UTF8CHAR>(*TextEntryWidget->GetHintText().ToString());
 		const auto PlaceholderTextChar = StringCast<UTF8CHAR>(*TextEntryWidget->GetText().ToString());
-		const uint32 CharMax = NAME_SIZE -1;
+		const int32 MaxEntryLength = GetDefault<UOnDeckSettings>()->MaxVirtualKeyboardTextLength + 1;
 
 		const EGamepadTextInputMode TextInputMode = bPasswordEntry ?
 			EGamepadTextInputMode::k_EGamepadTextInputModePassword :
@@ -37,7 +38,7 @@ void FSteamBigPictureTextField::ShowVirtualKeyboard(bool bShow, int32 UserIndex,
 		if (SteamUtils()->ShowGamepadTextInput(TextInputMode,
 											   LineInputMode,
 											   reinterpret_cast<const char*>(HintTextChar.Get()),
-											   CharMax,
+											   MaxEntryLength,
 											   reinterpret_cast<const char*>(PlaceholderTextChar.Get())
 		))
 		{
